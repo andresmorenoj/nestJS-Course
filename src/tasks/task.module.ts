@@ -1,4 +1,4 @@
-enum TASKS_STATUS {
+export enum TASKS_STATUS {
   OPEN = 'OPEN',
   IN_PROGRESS = 'IN_PROGRESS',
   DONE = 'DONE',
