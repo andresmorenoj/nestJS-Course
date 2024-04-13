@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { ITask } from './task.module';
 import { CreateTaskDto } from './dto/create-task-dto';
@@ -10,6 +10,12 @@ export class TasksController {
   @Get()
   getAllTasks(): ITask[] {
     return this.tasksService.getAllTasks();
+  }
+
+  // tasks/id
+  @Get('/:id')
+  getTaskById(@Param('id') id: string): ITask {
+    return this.tasksService.getTaskById(id);
   }
 
   // This will pass all the body to the method and requires extra validation for unknown properties in the body
