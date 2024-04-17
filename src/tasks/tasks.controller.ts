@@ -45,7 +45,10 @@ export class TasksController {
   }
 
   @Delete('/:id')
-  deleteTaskById(@Param('id') id: string, @GetUser() user: User): Promise<void> {
+  deleteTaskById(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void> {
     return this.tasksService.deleteTaskById(id, user);
   }
 
