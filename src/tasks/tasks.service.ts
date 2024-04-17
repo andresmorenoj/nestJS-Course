@@ -7,6 +7,7 @@ import { Task } from './task.entity';
 import { TASKS_STATUS } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
+import { User } from 'src/auth/user.entity';
 // import { TasksRepository } from './tasks.repository';
 
 @Injectable()
@@ -49,13 +50,14 @@ export class TasksService {
     return foundTask;
   }
 
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const { title, description } = createTaskDto;
 
     const task = this.tasksRepository.create({
       title,
       description,
       status: TASKS_STATUS.OPEN,
+      user,
     });
 
     await this.tasksRepository.save(task);
