@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -8,10 +12,12 @@ import { TASKS_STATUS } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { User } from 'src/auth/user.entity';
-// import { TasksRepository } from './tasks.repository';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class TasksService {
+  private logger = new Logger('TasksService', { timestamp: true });
+
   private notFoundException = (id: string) =>
     new NotFoundException(`Task with ID "${id}" not found`);
 
@@ -37,8 +43,16 @@ export class TasksService {
       );
     }
 
-    const tasks = await query.getMany();
-    return tasks;
+    try {
+      const tasks = await query.getMany();
+      return tasks;
+    } catch (error) {
+      this.logger.error(
+        `Failed to get tasks for user "${user.username}". Filters: ${JSON.stringify(filterDto)}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 
   async getTaskById(id: string, user: User): Promise<Task> {
